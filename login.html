@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>MyShop - Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="container">
+      <div class="navbar-brand">
+        <a href="index.html" style="color:#fff">MyShop</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main class="container">
+    <h2>Login / Register</h2>
+
+    <div style="max-width:420px;margin-top:20px">
+
+      <input id="email" 
+             placeholder="Email Address" 
+             style="width:100%;padding:8px;margin-bottom:8px;border:1px solid #ccc;border-radius:6px">
+
+      <input id="pass" 
+             placeholder="Password" 
+             type="password" 
+             style="width:100%;padding:8px;margin-bottom:8px;border:1px solid #ccc;border-radius:6px">
+
+      <button id="loginBtn" 
+              class="btn btn-primary" 
+              style="width:100%;margin-top:6px">Login</button>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">MyShop • Auth Page</footer>
+
+  <script>
+    // simple mock login
+    document.getElementById('loginBtn').addEventListener('click', () => {
+      const email = document.getElementById('email').value.trim();
+      const pass = document.getElementById('pass').value.trim();
+
+      if(!email || !pass){
+        alert("Please enter email and password.");
+        return;
+      }
+
+      // save user
+      localStorage.setItem('user', JSON.stringify({ email }));
+
+      alert("Logged in successfully as " + email);
+
+      window.location.href = "index.html";
+    });
+  </script>
+
+</body>
+</html>

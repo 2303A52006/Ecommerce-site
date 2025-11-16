@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>MyShop - Admin Panel</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="container">
+      <div class="navbar-brand">
+        <a href="index.html" style="color:#fff">MyShop</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main class="container">
+    <h2>Admin Panel</h2>
+
+    <!-- Add Product Form -->
+    <div style="display:flex;gap:12px;margin-bottom:12px;flex-wrap:wrap">
+      <input id="title" placeholder="Title" 
+             style="flex:1;padding:8px;border:1px solid #ccc;border-radius:6px">
+
+      <input id="cat" placeholder="Category" 
+             style="width:160px;padding:8px;border:1px solid #ccc;border-radius:6px">
+
+      <input id="price" placeholder="Price" type="number" 
+             style="width:120px;padding:8px;border:1px solid #ccc;border-radius:6px">
+
+      <input id="img" placeholder="Image URL" 
+             style="width:260px;padding:8px;border:1px solid #ccc;border-radius:6px">
+
+      <button id="addBtn" class="btn btn-primary">Add Product</button>
+    </div>
+
+    <!-- Product list -->
+    <div id="admin-list"></div>
+
+    <p class="small-muted" style="margin-top:20px">
+      * Admin changes are saved in your browser using localStorage.
+    </p>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">MyShop • Admin Page</footer>
+
+  <script src="app.js"></script>
+
+  <script>
+    function renderAdmin(){
+      const products = shop.loadProducts();
+      const list = document.getElementById('admin-list');
+
+      list.innerHTML = products.map(p => `
+        <div class="card" 
+             style="display:flex;align-items:center;gap:12px;padding:10px;margin-bottom:8px">
+
+          <img src="${p.img}" 
+               style="width:110px;height:70px;object-fit:cover;border-radius:6px">
+
+          <div style="flex:1">
+            <strong>${p.title}</strong>
+            <div class="small-muted">${p.category} • ${shop.fmt(p.price)}</div>
+
+            <button data-id="${p.id}" 
+                    class="delBtn" 
+                    style="margin-top:6px">Delete</button>
+          </div>
+
+        </div>
+      `).join('');
+
+      // Attach delete listeners
+      document.querySelectorAll('.delBtn').forEach(btn =>
+        btn.addEventListener('click', e => {
+          const id = Number(e.target.dataset.id);
+          const newList = products.filter(p => p.id !== id);
+          shop.saveProducts(newList);
+          renderAdmin();
+        })
+      );
+    }
+
+    // Add product
+    document.getElementById('addBtn').addEventListener('click', () => {
+      const title = document.getElementById('title').value.trim();
+      const cat = document.getElementById('cat').value.trim() || "General";
+      const price = Number(document.getElementById('price').value) || 0;
+      const img = document.getElementById('img').value.trim() 
+                  || "https://images.unsplash.com/photo-1518444023577-8d2d3e6cc4b6";
+
+      if(!title){
+        alert("Product title is required!");
+        return;
+      }
+
+      const products = shop.loadProducts();
+      const id = products.length ? Math.max(...products.map(x => x.id)) + 1 : 1;
+
+      products.push({
+        id,
+        title,
+        category: cat,
+        price,
+        img,
+        desc: "New product added by admin."
+      });
+
+      shop.saveProducts(products);
+      renderAdmin();
+
+      // Clear fields
+      document.getElementById('title').value = "";
+      document.getElementById('price').value = "";
+      document.getElementById('img').value = "";
+    });
+
+    renderAdmin();
+  </script>
+
+</body>
+</html>

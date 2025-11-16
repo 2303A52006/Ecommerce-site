@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Product Details</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="container header-flex">
+      <a href="index.html" class="logo">MyShop</a>
+      <a href="cart.html" class="cart-link">
+        Cart <span id="cart-badge" class="badge-qty"></span>
+      </a>
+    </div>
+  </header>
+
+  <main class="container" style="margin-top:20px; max-width:750px;">
+    
+    <div id="product-box">
+      <!-- JS will insert the product -->
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">MyShop • Student Project</footer>
+
+  <script src="app.js"></script>
+  <script>
+    // Get ID from URL
+    const params = new URLSearchParams(window.location.search);
+    const id = parseInt(params.get("id"));
+
+    const all = shop.loadProducts();
+    const p = all.find(x => x.id === id);
+
+    const box = document.getElementById("product-box");
+
+    if (!p) {
+      box.innerHTML = `<h2>Product Not Found</h2>`;
+    } else {
+      box.innerHTML = `
+        <div class="card" style="padding:20px">
+
+          <img src="${p.img}" alt="${p.name}" 
+               style="width:100%;max-height:350px;object-fit:cover;border-radius:10px">
+
+          <h2 style="margin-top:18px">${p.name}</h2>
+          <p class="small-muted">Price: ${shop.fmt(p.price)}</p>
+
+          <p style="margin-top:12px;font-size:1.1rem">${p.desc}</p>
+
+          <button class="btn btn-primary" 
+            onclick="shop.addToCart(${p.id}); alert('Added to cart!');">
+            Add to Cart
+          </button>
+
+          <a href="index.html" class="btn btn-secondary" style="margin-left:10px">
+            Back
+          </a>
+
+        </div>
+      `;
+    }
+
+    shop.updateCartBadge();
+  </script>
+
+</body>
+</html>

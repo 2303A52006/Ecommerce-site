@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>MyShop - Checkout</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="container" style="display:flex;align-items:center;justify-content:space-between">
+      <div class="navbar-brand"><a href="index.html" style="color:#fff">MyShop</a></div>
+      <nav>
+        <a href="cart.html" style="color:#fff">Cart</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main class="container">
+    <h2>Checkout</h2>
+    <div id="checkout-area"></div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">MyShop • Checkout Page</footer>
+
+  <script src="app.js"></script>
+
+  <script>
+    const area = document.getElementById('checkout-area');
+    const items = shop.cartItemsDetailed();
+
+    if(items.length === 0){
+      area.innerHTML = '<p class="small-muted">Your cart is empty.</p>';
+    }
+    else {
+      area.innerHTML = `
+        <div>
+          <h4>Order Summary</h4>
+          ${items.map(i => `
+            <div>${i.title} × ${i.qty} — ${shop.fmt(i.lineTotal)}</div>
+          `).join('')}
+
+          <p style="margin-top:8px"><strong>Total: ${shop.fmt(shop.cartTotal())}</strong></p>
+
+          <h4 style="margin-top:20px">Delivery Details</h4>
+          <div style="max-width:480px">
+            <input id="name" placeholder="Full Name" 
+                   style="width:100%;padding:8px;margin-bottom:8px">
+
+            <input id="addr" placeholder="Address" 
+                   style="width:100%;padding:8px;margin-bottom:8px">
+
+            <input id="phone" placeholder="Contact Number" 
+                   style="width:100%;padding:8px;margin-bottom:8px">
+
+            <button id="place" class="btn btn-primary" style="margin-top:8px">Place Order</button>
+          </div>
+        </div>
+      `;
+
+      // Place order button click
+      document.getElementById('place').addEventListener('click', () => {
+        const name = document.getElementById('name').value.trim();
+        const addr = document.getElementById('addr').value.trim();
+        const phone = document.getElementById('phone').value.trim();
+
+        if(!name || !addr || !phone){
+          alert("Please fill all details!");
+          return;
+        }
+
+        alert("Order placed successfully!\nThank you, " + name);
+
+        localStorage.removeItem('cart');
+        shop.updateCartBadge();
+        window.location.href = 'index.html';
+      });
+    }
+  </script>
+
+</body>
+</html>

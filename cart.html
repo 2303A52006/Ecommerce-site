@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>MyShop - Cart</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="container" style="display:flex;align-items:center;justify-content:space-between">
+      <div class="navbar-brand"><a href="index.html" style="color:#fff">MyShop</a></div>
+      <nav>
+        <a href="products.html" style="margin-right:14px;color:#fff">Products</a>
+        <a href="checkout.html" style="color:#fff">Checkout</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main class="container">
+    <h2>Your Cart</h2>
+
+    <div id="cart-area"></div>
+
+    <div style="margin-top:20px">
+      <a href="products.html" class="btn">Continue Shopping</a>
+      <a id="checkoutBtn" href="checkout.html" class="btn btn-primary">Proceed to Checkout</a>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">MyShop • Cart Page</footer>
+
+  <script src="app.js"></script>
+
+  <script>
+    function renderCart(){
+      const items = shop.cartItemsDetailed();
+      const area = document.getElementById('cart-area');
+
+      // If empty
+      if(items.length === 0){
+        area.innerHTML = '<p class="small-muted">Your cart is empty.</p>';
+        return;
+      }
+
+      // Render items
+      area.innerHTML = items.map(i => `
+        <div class="card" style="display:flex;gap:12px;align-items:center;padding:12px">
+          
+          <img src="${i.img}" style="width:120px;height:80px;object-fit:cover;border-radius:6px">
+          
+          <div style="flex:1">
+            <h5>${i.title}</h5>
+            <p class="small-muted">${shop.fmt(i.price)} • ${i.category}</p>
+
+            <div style="display:flex;gap:8px;align-items:center;margin-top:8px">
+              <input type="number" value="${i.qty}" min="1" data-id="${i.id}" 
+                     class="qtyinput" style="width:80px;padding:6px;border:1px solid #ccc;border-radius:6px">
+
+              <button data-id="${i.id}" class="remBtn">Remove</button>
+            </div>
+          </div>
+
+          <div style="text-align:right">
+            <div><strong>${shop.fmt(i.lineTotal)}</strong></div>
+          </div>
+
+        </div>
+      `).join('');
+
+      // TOTAL
+      const total = shop.cartTotal();
+      area.innerHTML += `<div style="margin-top:12px;text-align:right">
+        <strong>Total: ${shop.fmt(total)}</strong>
+      </div>`;
+
+      // Remove item
+      document.querySelectorAll('.remBtn').forEach(btn =>
+        btn.addEventListener('click', e=>{
+          const id = Number(e.target.dataset.id);
+          shop.removeFromCart(id);
+          renderCart();
+          shop.updateCartBadge();
+        })
+      );
+
+      // Update quantity
+      document.querySelectorAll('.qtyinput').forEach(inp =>
+        inp.addEventListener('change', e=>{
+          const id = Number(e.target.dataset.id);
+          const qty = Number(e.target.value) || 1;
+          shop.updateQty(id, qty);
+          renderCart();
+          shop.updateCartBadge();
+        })
+      );
+    }
+
+    renderCart();
+    shop.updateCartBadge();
+  </script>
+
+</body>
+</html>
