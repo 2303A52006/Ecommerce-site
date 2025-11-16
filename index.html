@@ -2,65 +2,84 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>MyShop - Home</title>
+  <title>MyShop - Login</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
 
-  <!-- Header -->
   <header class="header">
-    <div class="container header-flex">
-
-      <!-- LOGO -->
-      <a href="index.html" class="logo">MyShop</a>
-
-      <!-- NAV LINKS -->
-      <nav style="display:flex; gap:20px; align-items:center;">
-        <a href="login.html" class="nav-link" style="color:white; font-size:16px;">Login</a>
-        <a href="cart.html" class="nav-link" style="color:white; font-size:16px;">
-          Cart <span id="cart-badge" class="badge-qty"></span>
-        </a>
-      </nav>
-
+    <div class="container">
+      <h2 style="color:white">MyShop</h2>
     </div>
   </header>
 
-  <!-- Main Content -->
-  <main class="container">
+  <main class="container" style="max-width:400px;">
 
-    <h2 style="margin:20px 0">Our Products</h2>
+    <h2>Login / Register</h2>
 
-    <div id="product-list" class="grid"></div>
+    <input id="email" type="email" placeholder="Email" class="input">
+    <input id="password" type="password" placeholder="Password" class="input">
+
+    <button id="loginBtn" class="btn-disabled">Login</button>
 
   </main>
 
-  <!-- Footer -->
-  <footer class="footer">MyShop • Student Project</footer>
-
-  <script src="app.js"></script>
+  <footer class="footer">MyShop • Auth Page</footer>
 
   <script>
-    const items = shop.loadProducts();
+    const email = document.getElementById("email");
+    const pass = document.getElementById("password");
+    const btn = document.getElementById("loginBtn");
 
-    const list = document.getElementById("product-list");
+    function check() {
+      if (email.value.length > 3 && pass.value.length > 3) {
+        btn.className = "btn-primary";
+      } else {
+        btn.className = "btn-disabled";
+      }
+    }
 
-    list.innerHTML = items.map(p => `
-      <div class="card clickable-card" onclick="location.href='product.html?id=${p.id}'">
+    email.oninput = check;
+    pass.oninput = check;
 
-        <img class="product-img" src="${p.img}" alt="${p.name}">
+    btn.onclick = () => {
+      if (btn.className === "btn-primary") {
+        // Save login session
+        localStorage.setItem("user", email.value);
 
-        <div style="padding:12px">
-          <h3>${p.name}</h3>
-          <p class="small-muted">${shop.fmt(p.price)}</p>
-        </div>
-
-      </div>
-    `).join("");
-
-    shop.updateCartBadge();
+        // Redirect to home page
+        location.href = "home.html";
+      }
+    };
   </script>
+
+  <style>
+    .input {
+      width:100%;
+      padding:10px;
+      margin:8px 0;
+      border-radius:6px;
+      border:1px solid #ccc;
+    }
+    .btn-disabled {
+      width:100%;
+      padding:10px;
+      background:#d0d7e2;
+      color:#666;
+      border:none;
+      border-radius:6px;
+    }
+    .btn-primary {
+      width:100%;
+      padding:10px;
+      background:#0d6efd;
+      color:white;
+      border:none;
+      border-radius:6px;
+    }
+  </style>
 
 </body>
 </html>
